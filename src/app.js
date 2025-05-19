@@ -87,7 +87,7 @@ connectDB()
 .catch((err)=>{
     
     console.error("Database cannot be connected");
-    console.log(err)
+    console.log(err)nbgbvcc
 });
 
 
