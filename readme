@@ -1,0 +1,57 @@
+how to install express js   :- npm i express
+how to exit from nodemon:- ctrl+c and y
+how to enter in nodemon:- npx nodemon forlder/file.js
+express.js:- Express.js is a backend web framework built on top of Node.js. It is a lightweight, fast, and flexible framework used to create web applications and APIs.
+
+🔹 best choice to build a server-side application or REST API.
+
+
+express:"^4.19.2" :- ^ means auto update for all version if I don't use then that version is locked for all time.
+4== major (for major change)
+19==minor(for minor change)
+2==patch(for small change)
+if i have to work on a project so major should be the same if isn't then my program will not work 
+package-lock.json==tells which version uses
+pakage.json==tells the nomenclature means  what versioning system you used.
+
+
+in the routing : if there is multiple route then at the top route will run only rest is usseless.
+like if  we use "/" then only / wali route hi chalegi..& /hello wali aur /test wali nhi chalegi
+it run when there is a matching word.
+
+
+
+by default whenever you write an URL on the top of the browser that makes a GET API call.
+browser are the wrost method to test URL,to test your route ,to test your backend.
+
+
+for the testing API we use Postman .
+
+
+for the remember:-
+app.use("/user,()=>{
+ res.send("route handler 1");
+})
+
+so see; if you use app.get - handle all get req
+if app.post- handle all post request
+if app.use- handle all method
+
+
+middleware =>{
+    mainly we use middleware for authorization like login,aur signin etc.. it ensures that
+    user is authorized or not..
+}
+
+if your cnnection is not establish then go to mongodb.atlas and add the current ip address then 
+your connection with database will smoothly establish..
+
+
+*our sever can not read  JSON data directly, for the reading we use middleware which convert json data into javasript for the readable form 
+for this, we use express.json middleware 
+
+feed API- get all the users and all documents 
+
+
+
+
