@@ -6,7 +6,7 @@ const User=require("./models/user");
 app.use(express.json())
 
 app.get("/user", async(req,res)=>{
-    const userEmail=req.body.emailId;
+    const userEmail=req.query.emailId;
     try{
         const xyz= await User.findOne({emailId:userEmail});
         res.send(xyz);
@@ -67,7 +67,10 @@ app.patch("/user",async(req,res)=>{
     const  userId=req.body.userId;
     const data=req.body;
     try{
-     const user= await User.findByIdAndUpdate(userId , data,{returnDocument:"after"});
+     const user= await User.findByIdAndUpdate(userId , data,{
+        returnDocument:"after",
+        runValidators:true,
+    });
          console.log(user);
         res.send("user updated successfully");
     }
@@ -87,7 +90,7 @@ connectDB()
 .catch((err)=>{
     
     console.error("Database cannot be connected");
-    console.log(err)nbgbvcc
+    console.log(err);
 });
 
 

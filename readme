@@ -52,6 +52,9 @@ for this, we use express.json middleware
 
 feed API- get all the users and all documents 
 
+required :true check this attribute should be present in database 
+like, firstname : string,
+      required: true, it means firstname can't be skip
 
-
-
+unique ensures that same attribute(emailId) cannot insert to the database
+you cannot create another userId with same emailId             
