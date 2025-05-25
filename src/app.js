@@ -2,6 +2,8 @@ const express = require("express");
 const connectDB=require("./config/database");
 const app=express();
 const User=require("./models/user");
+const {validateSignupData} = require("./utils/validaton");
+const bcrypt = require("bcrypt");
 
 app.use(express.json())
 
@@ -47,18 +49,31 @@ app.get("/feed",async(req,res)=>{
 
 
 app.post("/signup",async(req,res)=>{
-    //creating a new instance of an User
-    const Userobj= new User(req.body);
-        
-    
-    
     try{
+    //validation of data
+    validateSignupData(req);
 
-        await  Userobj.save();
-        res.send("users added successfully");
+    
+    const { firstName, lastName, emailId, password}= req.body;
+    
+    // encrypt password
+    
+    const passwordHash = await bcrypt.hash(password,10);
+    console.log(passwordHash);
+    
+    //creating a new instance of an User
+    const Userobj= new User({
+        firstName,
+        lastName,
+        emailId,
+        password:passwordHash,
+    });
+    
+    await  Userobj.save();
+    res.send("users added successfully");
     }
     catch(err){
-        res.status(400).send("errorfound:" + err.message);
+        res.status(400).send("ERROR : " + err.message);
     }
 });
 
@@ -96,8 +111,8 @@ connectDB()
 .then(()=>{
     console.log("Database connection is established..");
     app.listen(7777,()=>{
-        console.log("surver is successfully listening on port 2000....");
-        console.log("sparsh singh is  studying in madan mohan");
+        console.log("Server is successfully listening on port 2000....");
+        
     });
 })
 .catch((err)=>{
