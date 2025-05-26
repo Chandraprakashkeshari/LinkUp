@@ -112,30 +112,7 @@ app.post("/login",async(req,res)=>{
 
 });
 
-app.get("/profile",async (req,res)=>{
-    try{
 
-        const cookies=req.cookies;
-        const {token} =cookies;
-        if(!token){
-            throw new Error("Invalid token!")
-        }
-        
-        // validate my token
-        const decodedMesaage= await jwt.verify(token,"LinkUp@VM");
-        const {_id}= decodedMesaage;
-        
-        const user = await User.findById(_id);
-        if(!user){
-            throw new Error("User does not exist ! ")
-        }
-        
-        res.send(user); 
-    } catch(err){
-        res.status(404).send("UPDATE FAILED:" + err.message);zzzzx
-    }
-    });
-    
 
 app.patch("/user/:userId",async(req,res)=>{
     const  userId=req.params?.userId;
