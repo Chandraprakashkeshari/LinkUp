@@ -6,6 +6,7 @@ const {validateSignupData} = require("./utils/validaton");
 const bcrypt = require("bcrypt");
 const cookieParser = require('cookie-parser');
 const jwt=require("jsonwebtoken");
+const {UserAuth}=require("./middlewares/auth");
 
 
 app.use(express.json())
@@ -17,14 +18,7 @@ app.get("/user", async(req,res)=>{
         const xyz= await User.findOne({emailId:userEmail});
         res.send(xyz);
     }    
-    //   const users = await User.find({emailId: userEmail});
-    //   if(users.length===0){
-    //     res.status(404).send("user not found")
-    //   }
-    //   else{
-    //     res.send(users)
-    //   }
-    // }
+    
     catch(err){
        res.status(400).send("Something went wrong");
     }
@@ -40,16 +34,16 @@ app.get("/feed",async(req,res)=>{
     }    
 })
 
-// app.delete("/user", async(req,res)=>{
-//     const userId = req.body.userId;
-//     try{
-//         const user = await User.findByIdAndDelete(userId);
-//         res.send("user deleted succussfully")
-//     }
-//     catch(err){
-//         res.status(404).send("something went wrong")
-//     }
-// });
+app.delete("/user", async(req,res)=>{
+    const userId = req.body.userId;
+    try{
+        const user = await User.findByIdAndDelete(userId);
+        res.send("user deleted succussfully")
+    }
+    catch(err){
+        res.status(404).send("something went wrong")
+    }
+});
 
 
 app.post("/signup",async(req,res)=>{
@@ -95,11 +89,13 @@ app.post("/login",async(req,res)=>{
     if(isPasswordValid){
 
     //created a jwt token
-    const token = await jwt.sign({ _id: user._id},"LinkUp@VM");
+    const token = await jwt.sign({ _id: user._id},"LinkUp@VM",{expiresIn:"1d"});
     console.log(token);
 
     //add the token to cookie and the response back to the user
-    res.cookie("token", token);
+    res.cookie("token", token, 
+    {expires: new Date(Date.now()+ 8*360000),
+    });
 
         res.send("login successfully !!")
     }else{
@@ -112,30 +108,23 @@ app.post("/login",async(req,res)=>{
 
 });
 
-app.get("/profile",async (req,res)=>{
+app.get("/profile", UserAuth, async (req,res)=>{
     try{
 
-        const cookies=req.cookies;
-        const {token} =cookies;
-        if(!token){
-            throw new Error("Invalid token!")
-        }
         
-        // validate my token
-        const decodedMesaage= await jwt.verify(token,"LinkUp@VM");
-        const {_id}= decodedMesaage;
         
-        const user = await User.findById(_id);
-        if(!user){
-            throw new Error("User does not exist ! ")
-        }
-        
+        const user = req.user;
         res.send(user); 
     } catch(err){
         res.status(404).send("UPDATE FAILED:" + err.message);
     }
-    });
-    
+});
+
+app.post("/Sendconnectionreq", UserAuth, async(req,res)=>{
+    const user = req.user;
+    console.log("sending the connection req!!");
+    res.send(user.firstName+ " sent the connection req!");
+});
 
 app.patch("/user/:userId",async(req,res)=>{
     const  userId=req.params?.userId;
@@ -179,77 +168,3 @@ connectDB()
     console.error("Database cannot be connected");
     console.log(err);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const {adminAuth,UserAuth}=require("./middlewares/a")
-// const app=express(); 
-//  //now I am creating a new express.js application
-
-// app.use("/admin",adminAuth)
-// // app.use("/user",UserAuth),(req,res)
-// app.post("/user/login",(req,res)=>{
-//     res.send("user logged in successfully");
-// })
-
-// app.get("/user/getAllData",UserAuth,(req,res)=>{
-//    res.send("all data is sent")
-// });
-// app.get("/admin/deletedaUser",(req,res)=>{
-//     res.send("all data is deleted ");
-// });
-
-
-
-// there are so many complex operation you can try..
-// app.get("/ab?c",(req,res)=>{// abc ,ac both are work mean b is option(if we use + it mean abc,abbc abbbc ... work)
-//     res.send({firstname:"vikesh",lastname:"keshari"});//this will only handle get call to /user.
-// })
-// app.get("/user",(req,res)=>{
-//     console.log(req.query );
-//     res.send({firstname:"vikesh",lastname:"keshari"});
-// })
-// app.get("/user/:userID/:name/:password",(req,res)=>{
-//     console.log(req.params );
-//     res.send({firstname:"vikesh",lastname:"keshari"});
-// })
-
-// app.post("/user",(req,res)=>{//saving data to DB.
-//     res.send("data is successfully saved to the data base");// this will handle post call to /user only.
-// })
-// app.delete("/user",(req,res)=>{
-//     res.send("data is deleted")//this will handle delete call to /user only .
-// })
-
-// app.use("/hello/3",(req,res)=>{  // this function is known as request handler for handle the server;
-//     res.send("sparsh singh is at ayodhya")
-// });  
-// app.use("/hello",(req,res)=>{  // this function is known as request handler for handle the server;
-//     res.send("sparsh singh is at allahabad")
-// });
-
-// app.use("/test",(req,res)=>{  // this function is known as request handler for handle the server;
-//     res.send("sparsh singh is at gkp ")
-// }); 
-
-
-
-//app.listen(3000);  //I have to add listen server so that anybody can connect to us.
-//or
