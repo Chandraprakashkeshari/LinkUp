@@ -46,20 +46,7 @@ profileRouter.patch("/profile/edit", UserAuth,async(req,res)=>{
     }
 });
 
-profileRouter.post("/forgot_pasword", UserAuth, async(req,res)=>{
-    try{
-        const {emailId}=req.body;
-        if(!emailId){
-            throw new Error("Email is required");
-        }
 
-        const user = await User.findOne({emailId:emailId}); 
-        if(!user){
-            throw new Error("User not found!")
-        }
-        
-    }
-})
 
 
 
